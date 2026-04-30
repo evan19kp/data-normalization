@@ -1,9 +1,9 @@
 import csv
 
 def parseCSV_fields(filename:str):
-    with open(filename, mode='r', newline='') as f:
-        reader = csv.DictReader(f)
-        fields = reader.fieldnames
+    with open(filename, mode='r') as f:
+        reader = csv.reader(f)
+        fields = next(reader)
         return fields
 
 def parseCSV(filename: str):
@@ -47,22 +47,31 @@ def rewrite_data(col: str, data: list, normalized: list):
         temp_data[i][col] = normalized[i]
     return temp_data
 
-def full_normalize(filename:str):
+def wrapper(filename:str):
     fieldnames = parseCSV_fields(filename)
     CSVdata = parseCSV(filename)
 
     for i, value in enumerate(CSVdata):
+        col = fieldnames[i]
+        if col == 'city':
+            continue
+        norm = normalize(fieldnames[i], CSVdata)
+        final = rewrite_data(fieldnames[i], CSVdata, norm)
+        return final
 
 
 
-all = parseCSV('data.csv')
+# all = parseCSV('data.csv')
 
-pop = normalize('population', all)
+# pop = normalize('population', all)
 
-area = normalize('area', all)
+# area = normalize('area', all)
 
-finally_done = rewrite_data('population', all, pop)
-# print(all)
-# print(pop)
-# print(area)
-print(finally_done)
+# finally_done = rewrite_data('population', all, pop)
+# # print(all)
+# # print(pop)
+# # print(area)
+# print(finally_done)
+
+normalized = wrapper('data.csv')
+print(normalized)
