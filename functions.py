@@ -25,10 +25,13 @@ def normalize(col:str, data: list): # data is a list of dicts
     the_values = []
 
     for i, value in enumerate(data):
-        if '.' in value[col]:
-            the_values.append(float(value[col]))
-        else:
-            the_values.append(int(value[col]))
+        try:
+            if '.' in value[col]:
+                the_values.append(float(value[col]))
+            else:
+                the_values.append(int(value[col]))
+        except ValueError:
+            return None
 
     normalized = []
 
@@ -52,20 +55,15 @@ def wrapper(filename:str):
     fieldnames = parseCSV_fields(filename)
     CSVdata = parseCSV(filename)
     final = []
-    temp_iterator = 0
 
-    for i, value in enumerate(CSVdata):
-        if temp_iterator < len(fieldnames): #figure out where to put this if block
-            temp_iterator += 1
-        else:
-            temp_iterator = 0
-
-        col = fieldnames[temp_iterator]
-        if any(c.isalpha() for c in CSVdata[i][col]):
+    for col in fieldnames:
+        norm = normalize(col, CSVdata)
+        if norm is None:
             continue
-
-        norm = normalize(fieldnames[temp_iterator], CSVdata)
-        temp_final = rewrite_data(fieldnames[temp_iterator], CSVdata, norm)
+        if not final:
+            temp_final = rewrite_data(col, CSVdata, norm)
+        else:
+            temp_final = rewrite_data(col, final, norm)
         final = temp_final
 
     return final
