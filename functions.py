@@ -1,4 +1,5 @@
 import csv
+import copy
 
 def parseCSV_fields(filename:str):
     with open(filename, mode='r') as f:
@@ -41,7 +42,7 @@ def normalize(col:str, data: list): # data is a list of dicts
     return normalized
 
 def rewrite_data(col: str, data: list, normalized: list):
-    temp_data = data
+    temp_data = copy.deepcopy(data)
 
     for i, value in enumerate(temp_data):
         temp_data[i][col] = normalized[i]
@@ -50,14 +51,25 @@ def rewrite_data(col: str, data: list, normalized: list):
 def wrapper(filename:str):
     fieldnames = parseCSV_fields(filename)
     CSVdata = parseCSV(filename)
+    final = []
+    temp_iterator = 0
 
     for i, value in enumerate(CSVdata):
-        col = fieldnames[i]
-        if col == 'city':
+        if temp_iterator < len(fieldnames): #figure out where to put this if block
+            temp_iterator += 1
+        else:
+            temp_iterator = 0
+
+        col = fieldnames[temp_iterator]
+        if any(c.isalpha() for c in CSVdata[i][col]):
             continue
-        norm = normalize(fieldnames[i], CSVdata)
-        final = rewrite_data(fieldnames[i], CSVdata, norm)
-        return final
+
+        norm = normalize(fieldnames[temp_iterator], CSVdata)
+        temp_final = rewrite_data(fieldnames[temp_iterator], CSVdata, norm)
+        final = temp_final
+
+    return final
+
 
 
 
