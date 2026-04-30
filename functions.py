@@ -6,7 +6,7 @@ def parseCSV_fields(filename:str):
         fields = reader.fieldnames
         return fields
 
-def parseCSV_by_column(filename: str):
+def parseCSV(filename: str):
     CSVdata = []
     with open(filename, mode='r', newline='') as f:
         reader = csv.DictReader(f)
@@ -40,9 +40,29 @@ def normalize(col:str, data: list): # data is a list of dicts
         normalized.append(temp)
     return normalized
 
-all = parseCSV_by_column('data.csv')
-print(all)
+def rewrite_data(col: str, data: list, normalized: list):
+    temp_data = data
+
+    for i, value in enumerate(temp_data):
+        temp_data[i][col] = normalized[i]
+    return temp_data
+
+def full_normalize(filename:str):
+    fieldnames = parseCSV_fields(filename)
+    CSVdata = parseCSV(filename)
+
+    for i, value in enumerate(CSVdata):
+
+
+
+all = parseCSV('data.csv')
+
 pop = normalize('population', all)
-print(pop)
+
 area = normalize('area', all)
-print(area)
+
+finally_done = rewrite_data('population', all, pop)
+# print(all)
+# print(pop)
+# print(area)
+print(finally_done)
