@@ -67,21 +67,3 @@ def wrapper(filename:str):
         final = temp_final
 
     return final
-
-
-
-
-# all = parseCSV('data.csv')
-
-# pop = normalize('population', all)
-
-# area = normalize('area', all)
-
-# finally_done = rewrite_data('population', all, pop)
-# # print(all)
-# # print(pop)
-# # print(area)
-# print(finally_done)
-
-normalized = wrapper('data.csv')
-print(normalized)
